@@ -23,6 +23,7 @@ public class Lecutre11_2D_Arrays_Homework {
         }
         System.out.println(count);
         System.out.println(Sum(arr));
+        
     }
     
 }

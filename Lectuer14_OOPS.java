@@ -7,6 +7,7 @@ public class Lecture14_OOPS {
 
         Pen penTip = new Pen();
         penTip.setTip(5);
+//         hey
         System.out.println(penTip.getTip());
 
         BankAccount bankAccount = new BankAccount();

@@ -1,0 +1,224 @@
+// Here come the King:-
+import java.util.*;
+public class Lecture23_Queues {
+    // Queues using Linked List :-
+    // static class Node{
+    //     int data;
+    //     Node next;
+    //     Node(int data){
+    //         this.data = data;
+    //         this.next = null;
+    //     }
+    // }
+    // static class Queue{
+
+        // static int arr[];
+        // static int size;
+        // static int rear;
+        // static int front;
+
+        // static Node head;
+        // static Node tail;
+
+        // // Empty:-
+        // Using LinkedList:-
+        // public boolean empty(){
+        //     return head == null && tail == null;
+        // }
+
+        // public static boolean isFull(){
+        //     return (rear+1)%size == front;
+        // }
+        
+        // Using Linked list;
+        // Add:-
+        // public void add(int data){
+        //     Node newN = new Node(data);
+        //     if(head==null){
+        //         head=tail=newN;
+        //     }
+        //     tail.next = newN;
+        //     tail = newN;
+        // }
+        // Using Array
+        // public void add(int data){
+        //     if(isFull()){
+        //         System.out.println("HouseFull, Sorry");
+        //         return;
+        //     }
+        //     if(front==-1){
+        //         front = 0;
+        //     }
+        //     rear = (rear+1)%size;
+        //     arr[rear] = data;
+        // }
+
+        // Using LinkedList:-
+        // public int remove(){
+        //     if(rear==-1){
+        //         System.out.println("Empty Queue");
+        //         return-1;
+        //     }
+        //     int front = head.data;
+        //     if(tail == head){
+        //         tail = head = null;
+        //     }
+        //     else{
+        //         head = head.next;
+        //     }
+        //     return front;
+        // }
+
+        // Remove:-
+        // public int remove(){
+        //     if(rear==-1){
+        //         System.out.println("Empty Queue");
+        //         return-1;
+        //     }
+        //     int result = arr[front];
+        //     if(rear == front){
+        //         rear = front = -1;
+        //     }
+        //     else{
+        //         front = (front+1)%size;
+        //     }
+        //     return result;
+        // }
+
+        // Peek:-
+        // Using LinkedList:-
+        // public int peek(){
+        //     if(empty()){
+        //         System.out.println("Queue is empty");
+        //         return -1;
+        //     }
+        //     return head.data;
+        // }
+
+        // public int peek(){
+        //     if(empty()){
+        //         System.out.println("Queue is empty");
+        //         return -1;
+        //     }
+        //     return arr[front];
+        // }
+
+        // Q - First Non-Repeating Character:-
+        public static void NonRepeating(String str){
+            int freq[] = new int[26];
+            Queue<Character> q = new LinkedList<>();
+            for(int i = 0; i<str.length(); i++){
+                char c = str.charAt(i);
+                q.add(c);
+                freq[c-'a']++;
+                while(!q.isEmpty() && freq[q.peek()-'a']>1){
+                    q.remove();
+                }
+                if(q.isEmpty()){
+                    System.out.print(-1+" ");
+                }
+                else{
+                    System.out.print(q.peek()+" ");
+                }
+            }
+            System.out.println();
+        }
+    
+    // Q - Intereleave 2 Havles of a Queue:-
+    public static void Interleave(Queue<Integer> q){
+        Queue<Integer> que = new LinkedList<>();     
+        int size = q.size();
+        for(int i = 0; i<size/2; i++){
+            que.add(q.remove());
+        }
+        while(!que.isEmpty()){
+            q.add(que.remove());
+            q.add(q.remove());
+        }
+    }
+
+    public static void Reverse(Queue<Integer> q){
+        Stack<Integer> stack = new Stack<>();
+        while(!q.isEmpty()){
+            stack.push(q.remove());
+        }
+        while(!stack.empty()){
+            q.add(stack.pop());
+        }
+    }
+
+    public static void main(String[] args) {
+        // Making a Queues:
+        // Only using the King
+        // Queue is a interface, we can't make it's own object.
+        // Queue<Integer> queue = new LinkedList<>(); we can implement Queue by Linkedlist,
+        // ArrayDeque.
+        // Making a object of Queue useing ArrayDeque.
+        Queue<Integer> queue = new ArrayDeque<>();
+        queue.add(1);
+        queue.add(2);
+        queue.add(3);
+        queue.add(4);
+        queue.remove();
+        System.out.println("Peeking the element of queue: ");
+        System.out.println(queue.peek());
+        System.out.println();
+        while(!queue.isEmpty()){
+            System.out.println(queue.peek());
+            queue.remove();
+        }
+        String str = "aaccbskkbsl";
+        NonRepeating(str);
+
+        Queue<Integer> que = new LinkedList<>();
+        que.add(1);
+        que.add(2);
+        que.add(3);
+        que.add(4);
+        que.add(5);
+        que.add(6); 
+        que.add(7);
+        que.add(8);
+        que.add(9);
+        que.add(10);
+        System.out.println();
+        Interleave(que);
+        while(!que.isEmpty()){
+            System.out.print(que.peek()+" ");
+            que.remove();
+        }
+        System.out.println();
+
+        System.out.println("Reversing a Queue:- ");
+        System.out.println();
+        Queue<Integer> q = new LinkedList<>();
+        q.add(1);
+        q.add(2);
+        q.add(3);
+        q.add(4);
+        q.add(5); 
+        q.add(6);
+        q.add(7);
+        q.add(8);
+        q.add(9);
+        q.add(10);
+        Reverse(q);
+        while(!q.isEmpty()){
+            System.out.print(q.peek()+" ");
+            q.remove();
+        }
+        System.out.println();
+
+        // Second brother of Queue:-
+            // Implementing Deque:-
+        System.out.println("Implementing Deque:-");
+        Deque<Integer> deque = new LinkedList<>();
+        deque.addFirst(4);
+        deque.addFirst(3);
+        deque.addFirst(2);
+        deque.addFirst(1);
+        deque.addLast(5);
+        System.out.println(deque);
+    }
+}
+

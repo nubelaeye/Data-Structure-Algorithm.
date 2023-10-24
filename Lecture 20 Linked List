@@ -1,0 +1,231 @@
+public class Lecture20_LinkedList {
+    // Now we will look how to remove or breack the cycle loop:-
+    public void RemoveCycle(Node head) {
+        Node slow = head;
+        Node fast = head;
+        boolean cycle = false;
+        while(fast!=null && fast.next!=null){
+            slow = slow.next;
+            fast = fast.next.next;
+            if(slow==fast){
+                cycle = true;
+                break;
+            }
+        }
+        if(cycle=false){
+            return;
+        }
+        System.out.println(cycle);
+        slow = head;
+        Node prev = null;
+        while(slow!=fast){
+            prev = fast;
+            slow = slow.next;
+            fast = fast.next;
+        }
+        prev.next = null;
+    }
+    // I am not knowing that this code will work or not but it was working in leetCode..
+    // replace Node with ListNode in leetcode 
+    // THis code is for detecting that the linked list list is a cycle or not 
+    // 1->2->3->4->2; Look that the value 4.next = 2, so this how it is a cycle list.
+    public boolean hasCycle(Node head) {
+        Node slow = head;
+        Node fast = head;
+        while(fast!=null && fast.next!=null){
+            slow = slow.next;
+            fast = fast.next.next;
+            if(slow==fast){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public static class Node{
+        int data;
+        Node next;
+
+        public Node(int data){
+            this.data = data;
+            this.next  = null;
+        }
+    }
+
+    public static Node Head;
+    public static Node Tail;
+    public int size;
+
+    public void AddFirst(int data){
+        Node node = new Node(data);
+        if(Head==null){
+            Head = Tail = node;
+            return;
+        }
+        node.next = Head;
+        Head = node;
+        // size++;
+    }
+    public static Node getTail(Node head){
+        Node temp = head;
+        Node tail = null;
+        while(temp.next!=null){
+            temp = temp.next;
+            if(temp.next==null){
+                tail = temp;
+            }
+        }
+        return tail;
+    }
+    public void AddLast(int data){
+        Node node = new Node(data);
+        Tail.next = node;
+        Tail = node; 
+        size++;
+
+    }
+
+    // Here is the best methoud of the Linked List finally going to print...
+    public void Print(){
+        if(Head == null){
+            System.out.println("Linked-List is empty");
+        }
+        Node temp = Head;
+        while(temp!=null){
+            System.out.print(temp.data+" ");
+            temp = temp.next;
+        }
+        System.out.println();
+    }
+
+    public void AddMiddle(int idx,int value){
+        Node node = new Node(value);
+        Node temp = Head;
+        int i = 0;
+        
+        while(i<idx-1){
+            temp = temp.next;
+            i++;
+        }
+        node.next = temp.next;
+        temp.next = node;
+        size++;
+    }
+
+    public int remove(){
+        int val = Head.data;
+        Head = Head.next;
+        return val;
+    }
+
+    // Searching in a Linked-List: iterative way.
+    public static int Search(int key){
+        Node temp = Head;
+        int i = 0; 
+        while(temp!=null){
+            if(temp.data==key){
+                return i;
+            }
+            temp = temp.next;
+            i++;
+        }
+        return -1;
+    }
+
+    // Searching in a Linked-List: Recusive way.
+
+    public static void reverse(){
+        Node prev = null;
+        Node curr = Tail = Head;
+        Node next;
+        while(curr!=null){
+            next = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = next;
+        }
+        Head = prev;
+    }
+
+    // Checking if Linked list is a palindrome...
+    // Slow fast Approach..
+    public static Node findNode(Node head){
+        Node slow = head;
+        Node fast = head;
+        while(fast!=null && fast.next!=null){
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return slow;
+    }
+
+    public boolean checkPalindrome(){
+        if(Head == null || Head.next==null){
+            return true;
+        }
+        Node midNode = findNode(Head);
+        Node prev = null;
+        Node curr = midNode;
+        Node next;
+        while(curr!=null){
+            next = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = next;
+        }
+        Node right = prev;
+        Node left = Head;
+
+        while(right!=null){
+            if(left.data!=right.data){
+                return false;
+            }
+            left = left.next;
+            right = right.next;
+        }
+        return true;
+
+    }
+
+    public static void main(String[] args) {
+        Lecture20_LinkedList ll = new Lecture20_LinkedList();
+        ll.AddFirst(1);
+        ll.Print();
+        ll.AddLast(2);
+        ll.Print();
+        ll.AddLast(3);
+        ll.Print();
+        ll.AddLast(4);
+        ll.Print();
+        ll.AddLast(5);
+        ll.Print();
+        ll.AddMiddle(2, 20);
+        ll.Print();
+        System.out.println("Delete N nodes after M nodes: ");
+        ll.Print();
+        System.out.println(ll.size);
+        // You might notice some change in the printing of the Linked-List:
+        // That is because, First we have added 1 and then again,
+        // Added first place 2 value. And then contineusly printing values.
+        System.out.println("removing: ");
+        ll.remove();
+        ll.Print();
+
+        // Searching an element:-
+        System.out.println(Search(5));
+
+        // Reverse Linked-List
+        ll.Print();
+        reverse();
+        ll.Print();
+
+        Lecture20_LinkedList l = new Lecture20_LinkedList();
+        l.AddLast(1);
+        l.AddLast(0);
+        l.AddLast(1);
+        System.out.println("printing tail of linked list:- ");
+        System.out.println(Lecture20_LinkedList.getTail(Head));
+        System.out.println();
+        System.out.println(l.checkPalindrome());
+    }
+}

@@ -1,0 +1,185 @@
+import java.util.*;
+public class Lecture22_Stacks {
+    // Creating ArrayList using stacks ->
+    // But the really fun is in using of stack collections framework.
+    static class Stacks{
+        // Creating or using Stack in Linked list:
+        static class Node{
+            int data;
+            Node next;
+            Node(int data){
+                this.data = data;
+                this.next = null;
+            }
+        } 
+
+        // static ArrayList<Integer> list = new ArrayList<>();
+
+        //     // Creating the functions like: isEmpty, push, pop, peek.
+        //     // Creating Linked List using Stack:
+        //     static Node head = null;
+        //     // 1).IsEmpty:
+        //     public static boolean isEmpty(){
+        //         return head==null;
+        //     }
+
+        //     // 2). push
+        //     public static void push(int data){
+        //         Node newN = new Node(data);
+        //         if(isEmpty()){
+        //             System.out.println("Sorry, but your linked list is empty.");
+        //             return;
+        //         }
+        //         newN.next = head;
+        //         head = newN; 
+        //     }
+
+        //     // 3). pop:
+        //     public static int pop(){
+        //         if(isEmpty()){
+        //             return -1;
+        //         }
+        //         int top = head.data;
+        //         head = head.next;
+        //         return top;
+        //     }
+            
+        //     // 4). peek:
+        //     public static int peek(){
+        //         if(isEmpty()){
+        //             return -1;
+        //         }
+        //         return head.data;
+        //     }
+            
+            // Stack using ArrayList:
+            // 1).isEmpty:
+            // public static boolean isEmpty(){
+            //     return list.size()==0;
+            // }
+            // // 2). push:
+            // public static void push(int data){
+            //     list.add(data);
+            // }
+            // // 3). pop:
+            // public static int pop(){
+            //     int top = list.get(list.size()-1);
+            //     list.remove(list.size()-1);
+            //     return top;
+            // }
+            // // 4) peek:
+            // public static int peek(){
+            //     int top = list.get(list.size()-1);
+            //     return top;
+            // }
+
+        
+    }
+
+    // Q - 1). Function of pushing at the bottom of the stack:
+    public static void pushAtBottom(Stack<Integer> s, int data){
+        if(s.empty()){
+            s.push(data);
+            return;
+        }
+        int top = s.pop();
+        pushAtBottom(s, data);
+        s.push(top);
+    }
+
+    // Q - 2). Creating a function to reverse a string:
+    public static String rev(String str){
+        Stack<Character> s = new Stack<>();
+        for(int i = 0; i<str.length(); i++){
+            s.push(str.charAt(i));
+        }
+        StringBuilder sb = new StringBuilder();
+        while(!s.empty()){
+            char curr = s.pop();
+            sb.append(curr);
+        }
+        return sb.toString();
+    } 
+
+    // Q - 3).Reversing a stack...
+    public static void reverse(Stack<Integer> s){
+        if(s.empty()){
+            return;
+        }
+        int top = s.pop(); 
+        reverse(s);
+        pushAtBottom(s, top);
+    }
+
+    // Function for printing the stack..
+    public static void print(Stack<Integer> stack){
+        while(!stack.empty()){
+            System.out.println(stack.pop());
+            // stack.pop();
+        }
+    }
+    public static void main(String[] args) {
+        // Finally useing/Studying stacks..
+        // Creating a stack:
+        Stack<Integer> stack = new Stack<>();
+        stack.push(4);
+        stack.push(3);  
+        stack.push(2);
+        stack.push(1);
+
+        while(!stack.empty()){
+            System.out.println(stack.peek());
+            stack.pop();
+        }
+
+        System.out.println("Pushing element at the bottom of the stack...");
+        // Pushing element at the bottom of the stack:
+        pushAtBottom(stack, 5);
+
+        while(!stack.empty()){
+            System.out.println(stack.peek());
+            stack.pop();
+        }
+
+        System.out.println("Reverse of a String...");
+
+        String str = "abcd";
+        String ans = rev(str);
+        System.out.println(ans);
+
+        Stack<Integer> s = new Stack<>();
+        s.push(1);
+        s.push(2);
+        s.push(3);
+        // s.push(4);
+        // s.push(5);
+
+        print(s);
+
+        System.out.println("Reverse of a stack...");
+        reverse(s);
+
+        print(s);
+
+        int arr[] = {6,8,0,1,3}; // O(n)
+        // Stack<Integer> list = new Stack<>();
+        int next[] = new int[arr.length];
+
+        for(int i = arr.length-1; i>=0; i--){
+            while(!s.empty() && arr[s.peek()]<arr[i]){
+                s.pop();
+            }
+            if(s.empty()){
+                next[i] = -1;
+            }
+            else{
+                next[i] = arr[s.peek()]; 
+            }
+            s.push(i);
+        }
+        for(int i = 0; i<next.length; i++){
+            System.out.print(next[i]+" ");
+        }
+        System.out.println();
+    }
+}

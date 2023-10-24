@@ -1,0 +1,233 @@
+import java.util.*;
+public class Lecture30_Graphs_Part2 {
+    static class Edge{
+        int src;
+        int dest;
+
+        public Edge(int s, int d){
+            this.src = s; 
+            this.dest = d;
+        }
+    }
+    public static void CreateGraphs(ArrayList<Edge> graph[]){
+        for(int i = 0; i<graph.length; i++){
+            graph[i] = new ArrayList<Edge>();
+        }
+
+        graph[2].add(new Edge(2, 3));
+        
+        graph[3].add(new Edge(3, 1));
+
+        graph[4].add(new Edge(4, 0));   
+        graph[4].add(new Edge(4, 1));   
+        
+        graph[5].add(new Edge(5, 0));
+        graph[5].add(new Edge(5, 2));
+
+    }
+    //Has Path:-
+    public static boolean hasPath(ArrayList<Edge> graph[], int src, int dest, boolean vis[]){
+        if(src==dest) return true;
+        vis[src] = true;
+        for(int i = 0; i<graph[src].size(); i++){
+            Edge e = graph[src].get(i);
+            if(!vis[e.dest] && hasPath(graph, e.dest, dest, vis)) return true;  
+        }
+        return false;
+    } 
+
+    // Cycle detection using DSF:-
+    public static boolean detect(ArrayList<Edge> graph[]){
+        boolean vis[] = new boolean[graph.length];
+        for(int i = 0; i<graph.length; i++){
+            if(!vis[i]){
+                if(detectCycleUtil(graph, vis, i ,-1)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    public static boolean detectCycleUtil(ArrayList<Edge> graph[], boolean vis[], int curr, int parent){
+        vis[curr] = true;
+        
+        for(int i = 0; i<graph[curr].size(); i++){
+            Edge e = graph[curr].get(i);
+            if(!vis[e.dest]){
+                if(detectCycleUtil(graph, vis,e.dest, curr)){
+                    return true;
+                } 
+            }
+            else if(vis[e.dest] && e.dest!=parent){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Bipartite Graph: T -> O(V+E).
+    public static boolean Bipartite(ArrayList<Edge> graph[]){
+        int col[] = new int[graph.length];
+        for(int i = 0; i<graph.length; i++){
+            col[i] = -1;
+        }
+
+        Queue<Integer> q = new LinkedList<>();
+
+        for(int i = 0; i<graph.length; i++){
+            if(col[i]== -1){
+                q.add(i);
+                col[i] = 0;
+                while(!q.isEmpty()){
+                    int curr = q.remove();
+                    for(int j = 0; j<graph[curr].size(); j++){
+                        Edge e = graph[curr].get(j);
+                        if(col[e.dest] == -1){
+                            int next = col[curr] == 0 ? 1 : 0;
+                            col[e.dest] = next;
+                            q.add(e.dest);
+                        }else if(col[e.dest]==col[curr]){
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    // Cycle detection in Directed graph using DFS:-
+    public static boolean Cycle(ArrayList<Edge> graph[]){
+        boolean vis[] = new boolean[graph.length];
+        boolean stack[] = new boolean[graph.length];
+
+        for(int i = 0; i<graph.length; i++){
+            if(!vis[i]){
+                if(CycleUtil(graph, i, vis, stack)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean CycleUtil(ArrayList<Edge> graph[] ,int curr, boolean vis[], boolean stack[]){
+        vis[curr] = true;
+        stack[curr] = true;
+
+        for(int  i = 0;i<graph[curr].size(); i++){
+            Edge e = graph[curr].get(i);
+            if(stack[e.dest]){
+                return true;
+            }
+            if(!vis[e.dest] && CycleUtil(graph, e.dest, vis, stack)){
+                return true;
+            }
+        }
+        stack[curr] = false;
+        return false;
+    }
+
+    // Topological Sorting of graph:-
+    public static void Topological(ArrayList<Edge> graph[]){
+        boolean vis[] = new boolean[graph.length];
+        Stack<Integer> s = new Stack<>();
+
+        for(int  i = 0; i<graph.length; i++){
+            if(!vis[i]){
+                TopologicalUtil(graph, i, vis, s);
+            }
+        }
+        while(!s.empty()){
+            System.out.print(s.pop() + " ");
+        }
+
+    }
+
+    public static void TopologicalUtil(ArrayList<Edge> graph[], int curr, boolean vis[], Stack<Integer> s){
+        vis[curr] = true;
+        for(int  i = 0; i<graph[curr].size(); i++){
+            Edge e = graph[curr].get(i);
+            if(!vis[e.dest]){
+                TopologicalUtil(graph, e.dest, vis, s);
+            }
+        }
+        s.push(curr);
+    }
+
+    public static void calindegree(ArrayList<Edge> graph[], int inDegree[]){
+        for(int i = 0; i<graph.length; i++){
+            int v = i; 
+            for(int j = 0; j<graph[v].size(); j++){
+                Edge e = graph[v].get(j);
+                inDegree[e.dest]++;
+            }
+        }
+    }
+
+    // Topological sort using BFS:- here we use in-degree and out-degree
+    public static void topSort(ArrayList<Edge> graph[]){
+        // here we learn a new type of logic in-degree-
+        int inDegree[] = new int[graph.length];
+        calindegree(graph, inDegree);
+        Queue<Integer> q = new LinkedList<>();
+
+        for(int i = 0; i<inDegree.length; i++){
+            if(inDegree[i]==0){
+                q.add(i);
+            }
+        }
+
+        while(!q.isEmpty()){
+            int curr = q.remove();
+            System.out.print(curr + " ");
+
+            for(int i = 0; i<graph[curr].size(); i++){
+                Edge e = graph[curr].get(i);
+                inDegree[e.dest]--;
+                if(inDegree[e.dest]==0){
+                    q.add(e.dest);
+                }
+            }
+        }
+        System.out.println();
+    }
+
+    // All paths from source to target:-
+    public static void pritnAllPath(ArrayList<Edge> graph[], int src, int dest, String path){
+        if(src==dest){
+            System.out.print(path+dest +" ");
+            return;
+        }
+
+        for(int i  = 0; i<graph[src].size(); i++){
+            Edge e = graph[src].get(i);
+            pritnAllPath(graph, e.dest, dest, path+ src);
+        }
+    }
+
+    // Next parts in Lecture 30 Graphs Part3.java
+
+
+
+    public static void main(String[] args) {
+        int V = 6;
+        boolean visited[] = new boolean[V];
+        ArrayList<Edge> graph[] = new ArrayList[V];
+        CreateGraphs(graph);
+        System.out.println(detect(graph));
+        System.out.println(hasPath(graph, 0, 4, visited));
+        System.out.println("Bipartite Graph:- ");
+        System.out.println(Bipartite(graph));
+        System.out.println("Detect cycle in Directed in graph:- ");
+        System.out.println(Cycle(graph));
+        System.out.println("Topological sort using DFS:- ");
+        Topological(graph);
+        System.out.println();
+        System.out.println("Topological sort using BFS:- ");
+        topSort(graph);
+        System.out.println("All paths source to target:- ");
+        pritnAllPath(graph, 5, 1, "");
+
+    }
+}

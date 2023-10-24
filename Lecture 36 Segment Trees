@@ -1,0 +1,89 @@
+public class Lecture32_Segment_Tree {
+    static int tree[];
+    // Thissss function is just for intializing it..
+    public static void init(int n){
+        tree = new int[n+8];
+    }
+    // Function for creating an segment tree...
+    // Time complexity -> O(n)
+    public static int buildSeg(int arr[], int i, int start, int end){
+        if(start == end){
+            tree[i] = arr[start];
+            return arr[start];
+        }
+        
+        int mid = (start+end)/2;
+        buildSeg(arr, 2*i+1, start, mid);
+        buildSeg(arr, 2*i+2, mid+1, end);
+        tree[i] = tree[2*i+1] + tree[2*i+2];
+        return tree[i];
+    }
+
+    // Queries on Segment Tree...
+    // Time complexity -> O(log n).
+    public static int get(int arr[], int qi, int qj){
+        int n = arr.length; 
+        return getSome(0, 0, n-1, qi, qj);
+    }
+    // So this is the actual code of Queries on Segment trees..
+    public static int getSome(int i, int si, int sj, int qi, int qj){
+        if(qj<=si || qi>=sj) return 0; //non Overlapping
+        else if(si>=qi && sj<=qj) return tree[i]; // Complete Overlapping
+        else{ // Paritial Overlapping
+            int mid  = (si+sj)/2;
+            int left = getSome(2*i+1, si, mid, qi, qj);
+            int right = getSome(2*i+2, mid+1, sj, qi, qj);
+            return left+right;
+        }
+    }
+
+    // Update on Segment Tree...
+    // Time Complexity -> O(log n).
+    public static void Update(int arr[], int idx, int newVal){
+        int n = arr.length;
+        int diff = newVal - arr[idx];
+        arr[idx] = newVal;
+
+        UpdateUtil(0,0,n-1, idx, diff);
+    }
+    // The actuall function..
+    public static void UpdateUtil(int i, int si, int sj, int idx, int diff){
+        if(idx>sj || idx<si)  return;
+
+        tree[i] +=diff;
+        if(si!=sj){
+            int mid = (si+sj)/2;
+            UpdateUtil(2*i+1, si, mid, idx, diff);
+            UpdateUtil(2*i+2, mid+1, sj, idx, diff);
+        }
+    }
+
+    // Finding the max of Segment Tree..
+    public static void Max(int i, int si, int sj, int arr[]){
+        if(si==sj){
+            tree[i] = arr[si];
+            return;
+        }
+        int mid = (si+sj)/2;
+        Max(2*i+1, si, mid, arr);
+        Max(2*i+2, mid+1, sj, arr);
+        tree[i] = Math.max(tree[2*i+1], tree[2*i+2]);
+    }
+    public static void main(String[] args) {
+        // Creation of Segment tree...
+        int arr[] = {6,8,-1,2,17,1,3,2,4};
+        int n = arr.length;
+        init(n);
+        // buildSeg(arr, 0, 0, n-1);
+
+        
+        // System.out.println(get(arr, 2, 5));
+        // Update(arr, 2, 2);
+        // System.out.println(get(arr, 2, 5));
+        Max(0, 0, n-1, arr);
+        for(int i = 0; i<tree.length; i++){
+            System.out.print(tree[i]+" ");
+        }
+        System.out.println();
+    }
+}

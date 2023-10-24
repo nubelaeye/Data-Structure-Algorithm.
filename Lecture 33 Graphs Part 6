@@ -1,0 +1,119 @@
+import java.util.*;
+public class Lecture31_Graphs_Part6 {
+    static class Edge{
+        int src;
+        int dest;
+
+        public Edge(int s, int d){
+            this.src = s;
+            this.dest = d;
+        }
+    }
+
+    // Creating the graph that we will run on..
+    public static void CreateGraph(ArrayList<Edge> graph[]){
+        for(int i = 0; i<graph.length; i++){
+            graph[i]  = new ArrayList<>();
+        }
+        graph[0].add(new Edge(0, 2));
+        graph[0].add(new Edge(0, 3));
+
+        graph[1].add(new Edge(1, 0));
+
+        graph[2].add(new Edge(2, 1));
+
+        graph[3].add(new Edge(3, 4));
+
+    }
+    // Code of topological Sorting..
+    public static void TopSort(ArrayList<Edge> graph[], int curr, boolean vis[], Stack<Integer> s){
+        vis[curr] = true;
+
+        for(int i = 0; i<graph[curr].size(); i++){
+            Edge e = graph[curr].get(i);
+            if(!vis[e.dest]){
+                TopSort(graph, e.dest, vis, s);
+            }
+        }
+        s.push(curr);
+    }
+    // Code of Normal DFS (Step 3).
+    public static void DFS(ArrayList<Edge> graph[], int curr, boolean vis[]){
+        vis[curr] = true;
+        System.out.print(curr+" ");
+
+        for(int i = 0; i<graph[curr].size(); i++){
+            Edge e = graph[curr].get(i);
+            if(!vis[e.dest]){
+                DFS(graph, e.dest, vis);
+            }
+        }
+    }
+
+    // The algorithhm starts here. 
+    public static void KosarajuAlgo(ArrayList<Edge> graph[], int V){
+        // Step 1. (Topological Sort)
+        Stack<Integer> s = new Stack<>();
+        boolean vis[] = new boolean[V];
+
+        for(int i = 0; i<V; i++){
+            if(!vis[i]){
+                TopSort(graph, i, vis, s);
+            }
+        }
+
+        // Step 2. (Transpose the Graph)
+        ArrayList<Edge> transpose[] = new ArrayList[V];
+        for(int i = 0; i<graph.length; i++){
+            vis[i] = false;
+            transpose[i]  = new ArrayList<>();
+        }
+        // Reversing the graph..
+        for(int i = 0; i<V; i++){
+            for(int j = 0; j<graph[i].size(); j++){
+                Edge e = graph[i].get(j);
+                transpose[e.dest].add(new Edge(e.dest, e.src)); // reverse of a edge/graph
+            }
+        }
+        
+        // Step 3. (Do DFS according to stack nodes on the tranpose graph)
+        while(!s.empty()){
+            int curr = s.pop();
+            if(!vis[curr]){
+                System.out.print(" -> ");
+                DFS(transpose, curr, vis); // Look carefully, the DFS has been called for tranpose.
+                System.out.println();
+            }
+        }
+
+    }
+
+    // Bridge in Graph -> (DFS) 
+    //    * Bridge in an edge whose deletion increaces the graph's number of connected components.*
+    // A new type of algorithm -> Tarjan's Algorithm..
+    // Diagram :- 
+        /*  1 --- 0 --*-*-- 3 
+            |   /        |
+            2            4
+
+            *-* ->  This denotes that -> If we disconnect that component then bridge will broke.
+        */
+    // Intuition -> We will make two arrays -> 1). alt[] = new int[V] -> discovery of time of nodes.
+    //                                      -> 2). low[] = new int[V] -> lowest discovery of all neighbours.
+
+    public static void main(String[] args) {
+        // We will learn a new algorithm -> Kosaraju's Algorithm..
+        // Strongly connected components
+        // Intuition -> We will use reversed DFS...
+        // Approach/Steps -> 1). Get nodes in stack(Topolgical sort).
+        //                   2). Transpose the Graph.
+        //                   3). Do DFS according to stack nodes on the tranpose graph.
+        // Time Complexit -> O(V+E).
+        // Startig HERE...
+        int V = 5;
+        ArrayList<Edge> graph[] = new ArrayList[V];
+        CreateGraph(graph);
+        KosarajuAlgo(graph, V);
+    }
+}
+

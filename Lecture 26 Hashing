@@ -1,0 +1,190 @@
+import java.util.*;
+public class Lecture28_Hashing {
+    // find itenrary for tickets:-
+    public static String getStart(HashMap<String, String> hashMap){
+        HashMap<String, String> revMap = new HashMap<>();
+        for(String key : hashMap.keySet()){
+            revMap.put(hashMap.get(key), key);
+        }
+
+        for(String key : hashMap.keySet()){ 
+            if(!revMap.containsKey(key)){
+                return key;
+            }
+        }
+        return null;
+    }
+
+    // Valid Anagram function:- o(n)
+    public static boolean Anagram(String s, String t){
+        HashMap<Character, Integer> map = new HashMap<>();
+        for(int i = 0; i<s.length(); i++){
+            char c = s.charAt(i);
+            map.put(c, map.getOrDefault(c, 0)+1);
+        }
+        for(int i = 0;i<t.length(); i++){
+            char c = t.charAt(i);
+            if(map.get(c)!=null){
+                if(map.get(c)==1)    map.remove(c);
+                else map.put(c, map.get(c)-1);
+            }
+            else return false;
+        }
+        return map.isEmpty();
+    }
+    public static void main(String[] args) {
+        // The real power of DSA -> All the operations in O(1). 
+        // HashMap Operators:-
+        // 1. put(add), 2. get(peek), 3. containsKey(search), 4.remove(delete)
+        
+        // Creating a HashMap:-
+        HashMap<String, Integer> map = new HashMap<>();
+        map.put("India", 100);
+        map.put("China", 120);
+        map.put("Russia", 500);
+        
+        // Printing HashMap:-
+        // 1. Method:-
+        Set<String> s = map.keySet();
+        System.out.println(s);
+        //2. Method:-
+        for(String k : s){
+            System.out.println(k + " , " + map.get(k));
+        }
+
+        // Although, the hashMap time complexity in wrost case is O(n).
+        // Creacting Linked HashMap:- benefit it's in ordered form means the way to go u came back.
+        // In Linked HashMap -> is created by Array of Doubly Linked List. 
+        LinkedHashMap<String, Integer> hm = new LinkedHashMap<>();
+        hm.put("1", 1);
+        hm.put("2", 2);
+        hm.put("3", 3);
+        hm.put("4", 4);
+        Set<String> k = hm.keySet();
+        System.out.println(k);
+
+        // And here comes, the TreeMap:-
+        // In TreeMap:- the keys are in sorted order.
+        // There are some stars which gives us time complexity of O(log n): put, remove, get.
+        // It's nodes are implement using Red Black trees.
+        // Creating TreeMap:-
+        HashMap<String, Integer> tm = new HashMap<>();
+        tm.put("India", 1);
+        tm.put("USA", 0);
+        tm.put("China", 2);
+        tm.put("Japan", 4);
+        System.out.println(tm);
+
+        // Majority Element:-
+        int arr[] = {1,3,2,5,1,3,1,5,1};
+        HashMap<Integer, Integer> Map = new HashMap<>();
+        for(int i = 0; i<arr.length; i++){
+            if(Map.containsKey(arr[i])){
+                Map.put(arr[i], Map.get(arr[i])+1);
+            }
+            else{
+                Map.put(arr[i], 1);
+            }
+        }
+        Set<Integer> set = Map.keySet();
+        for(Integer i : set){
+            if(Map.get(i)>arr.length/3){
+                System.out.println(i);
+            }
+        } 
+
+        // Valid Anagram:-
+        String l = "care";
+        String t = "race";
+        System.out.println(Anagram(l, t));
+
+        // Here, comes Hash Set:-
+            // Hash set is implemented by HashMap
+            // no Duplicates
+            // UnOrdered
+            // NULL is allowed
+        // And operations of it:-
+            // Add(Key) -> T=O(1)
+            // contains(Key) -> T=O(1)
+            // remove(Key) -> T=O(1)
+        // Creating a HashSet:-
+        HashSet<Integer> hashSet = new HashSet<>();
+        hashSet.add(1);
+        hashSet.add(2);
+        hashSet.add(3);
+        hashSet.add(4);
+        hashSet.add(1);
+        hashSet.add(2);
+        System.out.println(hashSet);
+        System.out.println(hashSet.contains(2));
+        hashSet.remove(2);
+        System.out.println(hashSet.contains(5));
+
+        // Iterator on Hash Set:-
+        Iterator<Integer> it = hashSet.iterator();
+        while(it.hasNext()){
+            System.out.println(it.next());
+        }
+
+        // OR
+
+        for(Integer ci : hashSet){
+            System.out.println(ci);
+        }
+         
+        // Creating Linked HashSet:-
+            // Orders are manitained.(But not in sorted order it means that the way it comes that way it goes).
+        LinkedHashSet<Integer> Set = new LinkedHashSet<>();
+        Set.add(1);
+        Set.add(4);
+        Set.add(3);
+        Set.add(5);
+        System.out.println(Set);
+
+        // Creating Tree HashSet:-
+            // Sorted in ascending order
+            // NULL values of are not allowed
+            // The operations are now in O(log n).
+        TreeSet<Integer> tree = new TreeSet<>();
+        tree.add(1);
+        tree.add(4);
+        tree.add(3);
+        tree.add(5);
+        System.out.println(tree);
+
+        // Intersection of 2 arrays:-
+        // find Itinerary for tickets:-
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("Chennai", "Bengaluru"); 
+        hashMap.put("Mumbai", "Dehli"); 
+        hashMap.put("Goa", "Chennai"); 
+        hashMap.put("Dehli", "Goa"); 
+
+        String start = getStart(hashMap);
+        System.out.print(start);  
+        for(String i : hashMap.keySet()){
+            System.out.print(" -> " + hashMap.get(start));
+            start = hashMap.get(start);
+        }
+        System.out.println();
+
+        // Longest subarray length with sum = 0. T -> O(n)
+
+        int array[] = {15,2,-2,-8,1,7,10,23};
+
+        HashMap<Integer, Integer> m = new HashMap<>();
+        int sum = 0;
+        int len = 0;
+
+        for(int i = 0; i<array.length; i++){
+            sum += array[i];
+            if(m.containsKey(sum)){
+                len = Math.max(len, i-m.get(sum));
+            }
+            else{
+                m.put(sum, i);
+            }
+        }
+        System.out.println(len);   
+    }
+}

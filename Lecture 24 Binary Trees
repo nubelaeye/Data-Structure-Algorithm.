@@ -1,0 +1,79 @@
+import java.util.*;
+public class Lecture25_BinaryTree {
+    static class Node{
+        int data;
+        Node left;
+        Node right;
+        Node(int data){
+            this.data = data;   
+            this.left = null;
+            this.right = null;
+        }
+    }
+    static class BinaryTree {
+        static int idx = -1;
+        public Node buildNode(int nodes[]){
+            idx++;
+            if(nodes[idx] == -1){
+                return null;
+            }
+            Node newN = new Node(nodes[idx]);
+            newN.left = buildNode(nodes);
+            newN.right = buildNode(nodes);
+
+            return newN;
+        }
+
+        // 1). PreOrder Traversal:-
+        public void preOrder(Node root){
+            if(root==null){
+                return;
+            }
+            System.out.println(root.data);
+            preOrder(root.left);
+            preOrder(root.right);
+        }
+
+        // 4). Level Traversal:-
+        public void level(Node root){
+            if(root==null){
+                return;
+            }
+            Queue<Node> q = new LinkedList<>();
+            q.add(root);
+            q.add(null);
+            while(!q.isEmpty()){
+                Node curr = q.remove();
+                if(curr==null){
+                    System.out.println();
+                    if(q.isEmpty()){
+                        break;
+                    }
+                    else{
+                        q.add(null);
+                    }
+                }
+                else{
+                    System.out.println(curr.data);
+                    if(curr.left!=null){
+                        q.add(curr.left);
+                    }
+                    if(curr.right!=null){
+                        q.add(curr.right);
+                    }
+                }
+            }   
+        }
+    }
+
+
+    
+    public static void main(String[] args) {
+        int nodes[] = {1,2,3,4,5,6};
+        BinaryTree tree = new BinaryTree();
+        Node root = tree.buildNode(nodes);
+        tree.level(root);
+
+    }
+}
+
